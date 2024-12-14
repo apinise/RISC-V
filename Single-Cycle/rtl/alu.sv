@@ -77,8 +77,8 @@ logic [DWIDTH-1:0] mul_div_upper;
 ///////////////////////   Module Logic   ///////////////////////
 ////////////////////////////////////////////////////////////////
 
-always_comb begin
-  casez(ALU_OP)
+always@(*) begin
+  case(ALU_OP)
     ADD:  ALU_Out = ALU_In_A + ALU_In_B; //add
     SUB:  ALU_Out = ALU_In_A - ALU_In_B; //subtract
     SLL:  ALU_Out = ALU_In_A << ALU_In_B; //logical left shift
@@ -90,12 +90,12 @@ always_comb begin
     OR:   ALU_Out = ALU_In_A | ALU_In_B; //or
     AND:  ALU_Out = ALU_In_A & ALU_In_B; //and
     default: begin
-      ALU_Out = ALU_In_A + ALU_In_B; //default add
+      ALU_Out = 32'b0; //default add
     end
   endcase
-end
 
-assign ALU_Zero_Flag = (ALU_Out == '0) ? '1 : '0; //set on zero
+  ALU_Zero_Flag = (ALU_Out == 32'b0) ? 1'b1 : 1'b0; // set on zero
+end
 
 ////////////////////////////////////////////////////////////////
 //////////////////   Instantiation Template   //////////////////

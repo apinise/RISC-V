@@ -23,7 +23,7 @@ wire          ALU_Zero_Flag;
 // Expected outputs
 reg   [31:0]  Expected_ALU_Out;
 reg           Expected_ALU_Zero_Flag;
-reg           Test_Failed;
+integer       Test_Failed;
 
 ////////////////////////////////////////////////////////////////
 //////////////////////   Instantiations   //////////////////////
@@ -61,9 +61,9 @@ task compute_expected_output;
       4'b0101:  result = a ^ b;
       4'b0110:  result = a >> b;
       4'b0111:  result = $signed(a) >>> b;
-      4'b1000:  result a | b;
-      4'b1001:  result a & b;
-      default: result = 0;
+      4'b1000:  result = a | b;
+      4'b1001:  result = a & b;
+      default:  result = 0;
     endcase
     
     zero_flag = (result == 0);
@@ -79,12 +79,13 @@ initial begin
   $dumpfile("alu.vcd");
   $dumpvars(0, alu_tb);
   
-  $random(SEED);
+  Test_Failed = 0;
+  //$random(SEED);
   
   repeat(1000) begin
     ALU_In_A = $unsigned($random);
     ALU_In_B = $unsigned($random);
-    ALU_OP   = $unsigned($random);
+    ALU_OP   = $unsigned($random) % 16;
     
     #5;
     
