@@ -86,8 +86,8 @@ initial begin
     ALU_In_A = $unsigned($random);
     ALU_In_B = $unsigned($random);
     ALU_OP   = $unsigned($random) % 16;
-    
-    #5;
+
+    #1;
     
     // Compute expected outputs
     compute_expected_output(ALU_In_A, ALU_In_B, ALU_OP, Expected_ALU_Out, Expected_ALU_Zero_Flag);
@@ -100,6 +100,8 @@ initial begin
       $display("Expected: ALU_Out = %h, ALU_Zero_Flag = %b", Expected_ALU_Out, Expected_ALU_Zero_Flag);
       Test_Failed = 1;
     end
+
+    #5;
   end
   
   if (!Test_Failed) begin

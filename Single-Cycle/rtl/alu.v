@@ -16,11 +16,11 @@
 module alu #(
   parameter DWIDTH = 32
 )(
-  input   logic [DWIDTH-1:0]  ALU_In_A, //Operand A
-  input   logic [DWIDTH-1:0]  ALU_In_B, //Operand B
-  input   logic [3:0]         ALU_OP,   //ALU Opcode
-  output  logic [DWIDTH-1:0]  ALU_Out,  //ALU Result
-  output  logic               ALU_Zero_Flag
+  input   wire 	[DWIDTH-1:0]  ALU_In_A, //Operand A
+  input   wire 	[DWIDTH-1:0]  ALU_In_B, //Operand B
+  input   wire 	[3:0]         ALU_OP,   //ALU Opcode
+  output  reg 	[DWIDTH-1:0]  ALU_Out,  //ALU Result
+  output  reg                 ALU_Zero_Flag
 );
 
 /*
@@ -82,8 +82,8 @@ always@(*) begin
     ADD:  ALU_Out = ALU_In_A + ALU_In_B; //add
     SUB:  ALU_Out = ALU_In_A - ALU_In_B; //subtract
     SLL:  ALU_Out = ALU_In_A << ALU_In_B; //logical left shift
-    SLT:  ALU_Out = ($signed(ALU_In_A) < $signed(ALU_In_B)) ? 1 : '0; //signed less than
-    SLTU: ALU_Out = (ALU_In_A < ALU_In_B) ? 1 : '0; //Unsigned set on less then
+    SLT:  ALU_Out = ($signed(ALU_In_A) < $signed(ALU_In_B)) ? 32'd1 : 32'd0; //signed less than
+    SLTU: ALU_Out = (ALU_In_A < ALU_In_B) ? 32'd1 : 32'd0; //Unsigned set on less then
     XOR:  ALU_Out = ALU_In_A ^ ALU_In_B; //xor
     SRL:  ALU_Out = ALU_In_A >> ALU_In_B; //shift logic right
     SRA:  ALU_Out = $signed(ALU_In_A) >>> ALU_In_B; //signed shift logic right

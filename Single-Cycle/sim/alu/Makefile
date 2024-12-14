@@ -3,7 +3,7 @@ IVERILOG = iverilog
 VVP = vvp
 
 # Files
-SRC = ../../rtl/alu.sv alu_tb.sv
+SRC = ../../rtl/alu.v alu_tb.v
 OUT = alu_tb_out
 
 # Default target
