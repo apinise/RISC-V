@@ -1,23 +1,10 @@
 # Compiler and Simulator
-IVERILOG = iverilog
-VVP = vvp
-
-# Files
-SRC = ../../rtl/alu.v alu_tb.v
-OUT = alu_tb_out
-
-# Default target
-all: run
-
-# Compile the testbench
-compile:
-	$(IVERILOG) -o $(OUT) $(SRC)
-
-# Run the simulation
-run: compile
-	$(VVP) $(OUT)
+sim:
+	vlog -work work \
+	../../rtl/alu.v \
+	alu_tb.v; \
+	vsim -c -do ./dofile.do -L work work.alu_tb
 
 # Clean up generated files
 clean:
-	rm -f $(OUT) *.vcd
-
+	rm -rf $(OUT) *.vcd transcript work
