@@ -80,7 +80,7 @@ initial begin
   $dumpvars(0, alu_tb);
   
   Test_Failed = 0;
-  //$random(SEED);
+  $random(SEED);
   
   repeat(1000) begin
     ALU_In_A = $unsigned($random);
