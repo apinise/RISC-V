@@ -1,0 +1,25 @@
+# Makefile for Yosys synthesis
+
+# Define paths
+VERILOG_SRC = ../../rtl/alu.v
+SYNTH_SCRIPT = synth_alu_no_lib.ys
+OUTPUT_DIR = build
+SYNTH_OUTPUT = $(OUTPUT_DIR)/alu_synth.v
+
+# Default target
+all:
+	make output
+	make syn
+
+# Create output directory if it doesn't exist       
+output:
+	mkdir -p $(OUTPUT_DIR)
+
+# Synthesis step
+syn:
+	yosys -s $(SYNTH_SCRIPT)
+
+# Clean up build directory
+clean:
+	rm -rf $(OUTPUT_DIR)
+
