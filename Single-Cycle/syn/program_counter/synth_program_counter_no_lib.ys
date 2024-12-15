@@ -17,6 +17,3 @@ stat
 
 # Optionally, print the hierarchy of the design
 hierarchy -top program_counter
-
-# Write out JSON for further analysis (optional)
-write_json build/program_counter_synth.json

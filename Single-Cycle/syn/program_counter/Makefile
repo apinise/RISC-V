@@ -17,7 +17,7 @@ output:
 
 # Synthesis step
 syn:
-	yosys -s $(SYNTH_SCRIPT)
+	yosys -s $(SYNTH_SCRIPT) 2>&1 | tee build/yosys_output.log
 
 # Clean up build directory
 clean:
