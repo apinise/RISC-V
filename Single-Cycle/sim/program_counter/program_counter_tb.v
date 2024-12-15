@@ -40,10 +40,8 @@ program_counter DUT (
 ////////////////////////////////////////////////////////////////
 
 // Clock Generation
-initial begin
-  Clk_Core = 0;
-  always #5 Clk_Core = ~Clk_Core; // 10ns clock period
-end
+initial Clk_Core = 0;
+always #5 Clk_Core = ~Clk_Core; // 10ns clock period
 
 // Test Procedure
 initial begin
