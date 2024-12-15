@@ -30,7 +30,7 @@ reg [31:0] expected_instr [0:MEM_SIZE-1]; // Expected instruction memory
 ////////////////////////////////////////////////////////////////
 
 // Instantiate the DUT
-instruct_mem #(
+instruction_mem #(
   .MEM_SIZE(MEM_SIZE)
 ) DUT (
   .Clk_Core(Clk_Core),

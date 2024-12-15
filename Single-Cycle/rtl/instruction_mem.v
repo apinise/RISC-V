@@ -12,8 +12,8 @@
 // 
 ////////////////////////////////////////////////////////////////
 
-module instruct_mem #(
-  parameter MEM_SIZE = 16384 // Mem size in words
+module instruction_mem #(
+  parameter MEM_SIZE = 128 // Mem size in words
 )(
   input   wire        Clk_Core,
   input   wire        Rst_Core_N,
