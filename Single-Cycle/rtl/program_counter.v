@@ -23,7 +23,7 @@ module program_counter (
 	input	wire		Rst_Core_N,
 	input	wire		PC_Sel,
 	input	wire [31:0]	Program_Count_Imm,
-	output  wire [31:0]	Progeam_Count_Off,
+	output  wire [31:0]	Program_Count_Off,
 	output  wire [31:0]	Program_Count
 );
 
