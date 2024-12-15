@@ -1,0 +1,25 @@
+# Makefile for Yosys synthesis
+
+# Define paths
+VERILOG_SRC = ../../rtl/program_counter.v
+SYNTH_SCRIPT = synth_program_counter_no_lib.ys
+OUTPUT_DIR = build
+SYNTH_OUTPUT = $(OUTPUT_DIR)/program_counter_synth.v
+
+# Default target
+all:
+	make output
+	make syn
+
+# Create output directory if it doesn't exist       
+output:
+	mkdir -p $(OUTPUT_DIR)
+
+# Synthesis step
+syn:
+	yosys -s $(SYNTH_SCRIPT)
+
+# Clean up build directory
+clean:
+	rm -rf $(OUTPUT_DIR)
+
