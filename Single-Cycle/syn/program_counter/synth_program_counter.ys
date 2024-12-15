@@ -1,0 +1,27 @@
+# Yosys TCL Script for ALU Synthesis (Standard Verilog)
+
+# Read the Verilog source
+read_verilog ../../rtl/program_counter.v
+
+# Specify the top module
+hierarchy -check -top program_counter
+
+# Perform synthesis
+proc; opt; fsm; opt; memory; opt; techmap; opt;
+
+# Map to generic standard cells (optional for realistic synthesis flow)
+dfflibmap -liberty ../../lib/cells.lib
+abc -liberty ../../lib/cells.lib
+opt
+
+# Write the synthesized netlist
+write_verilog build/program_counter.v
+
+# Write a report
+stat
+
+# Optionally, print the hierarchy of the design
+hierarchy -top program_counter
+
+# Write out JSON for further analysis (optional)
+write_json build/program_counter.json
