@@ -1,0 +1,24 @@
+# Yosys TCL Script for ALU Synthesis (Standard Verilog)
+
+# Read the Verilog source
+read_verilog ../../rtl/branch_comp.v
+
+# Specify the top module
+hierarchy -check -top branch_comp
+
+# Perform synthesis
+proc; opt; fsm; opt; memory; opt; techmap; opt;
+
+# Map to generic standard cells (optional for realistic synthesis flow)
+dfflibmap -liberty /opt/libraries/skywater-pdk/libraries/sky130_fd_sc_hd/latest/timing/sky130_fd_sc_hd__tt_100C_1v80.lib
+abc -liberty /opt/libraries/skywater-pdk/libraries/sky130_fd_sc_hd/latest/timing/sky130_fd_sc_hd__tt_100C_1v80.lib
+opt
+
+# Write the synthesized netlist
+write_verilog build/branch_comp_synth.v
+
+# Write a report
+stat
+
+# Optionally, print the hierarchy of the design
+hierarchy -top branch_comp
