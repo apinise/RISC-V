@@ -28,8 +28,8 @@ always @(*) begin
   instruct_funct3 = Instruction[14:12];
   
   case (Imm_Sel)
-    I_TYPE: begin
-      if (instruct_funct3 == SLL || instruct_funct3 == SRL_SRA) begin
+    `I_TYPE: begin
+      if (instruct_funct3 == `FUNCT3_SLL || instruct_funct3 == `FUNCT3_SRL_SRA) begin
         Imm_Gen_Out = {{26{1'b0}}, Instruction[24:20]};
       end
       else begin
@@ -37,11 +37,11 @@ always @(*) begin
       end
     end
     
-    S_TYPE: Imm_Gen_Out = (Instruction[31] == 1'b1) ? {{21{1'b1}}, Instruction[30:25], Instruction[11:7]} : {{21{1'b0}}, Instruction[30:25], Instruction[11:7]};
+    `S_TYPE: Imm_Gen_Out = (Instruction[31] == 1'b1) ? {{21{1'b1}}, Instruction[30:25], Instruction[11:7]} : {{21{1'b0}}, Instruction[30:25], Instruction[11:7]};
     
-    B_TYPE: Imm_Gen_Out = (Instruction[31] == 1'b1) ? {{20{1'b1}}, Instruction[7], Instruction[30:25], Instruction[11:8], 1'b0} : {{20{1'b0}}, Instruction[7], Instruction[30:25], Instruction[11:8], 1'b0};
+    `B_TYPE: Imm_Gen_Out = (Instruction[31] == 1'b1) ? {{20{1'b1}}, Instruction[7], Instruction[30:25], Instruction[11:8], 1'b0} : {{20{1'b0}}, Instruction[7], Instruction[30:25], Instruction[11:8], 1'b0};
     
-    J_TYPE: begin
+    `J_TYPE: begin
       if (Instruction[6:0] == 7'b1101111) begin
         Imm_Gen_Out = (Instruction[31] == 1'b1) ? {{12{1'b1}},Instruction[19:12],Instruction[20],Instruction[30:21],1'b0} : {{12{1'b0}},Instruction[19:12],Instruction[20],Instruction[30:21],1'b0};
       end

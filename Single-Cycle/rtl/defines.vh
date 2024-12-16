@@ -17,5 +17,5 @@
 `define J_TYPE = 2'b11;
 
 // Instruct Function 3
-`define SLL      = 3'b001;
-`define SRL_SRA  = 3'b101;
+`define FUNCT3_SLL      = 3'b001;
+`define FUNCT3_SRL_SRA  = 3'b101;

@@ -1,16 +1,3 @@
-//////////////////////////////////////////////////////////////// 
-// Engineer: Evan Apinis
-// 
-// Module Name: alu.sv
-// Project Name: RV32I 
-// Description: 
-// 
-// ALU module for a RV32I CPU supporting the entire
-// base instruction set.
-//
-// Revision 0.01 - File Created
-// 
-////////////////////////////////////////////////////////////////
 `timescale 1ns / 1ps
 
 module alu #(
@@ -22,6 +9,8 @@ module alu #(
   output  reg 	[DWIDTH-1:0]  ALU_Out,  //ALU Result
   output  reg                 ALU_Zero_Flag
 );
+
+`include "defines.vh"
 
 /*
 -----------------------------------------------
@@ -50,23 +39,6 @@ module alu #(
 */
 
 ////////////////////////////////////////////////////////////////
-////////////////////////   Parameters   ////////////////////////
-////////////////////////////////////////////////////////////////
-
-//Local parameters for ALU decode from control logic
-localparam ADD  = 4'b0000;
-localparam SUB  = 4'b0001;
-localparam SLL  = 4'b0010;
-localparam SLT  = 4'b0011;
-localparam SLTU = 4'b0100;
-localparam XOR  = 4'b0101;
-localparam SRL  = 4'b0110;
-localparam SRA  = 4'b0111;
-localparam OR   = 4'b1000;
-localparam AND  = 4'b1001;
-localparam MULT = 4'b1010;
-
-////////////////////////////////////////////////////////////////
 ///////////////////////   Internal Net   ///////////////////////
 ////////////////////////////////////////////////////////////////
 
@@ -79,16 +51,16 @@ wire [DWIDTH-1:0] mul_div_upper;
 
 always@(*) begin
   case(ALU_OP)
-    ADD:  ALU_Out = ALU_In_A + ALU_In_B; //add
-    SUB:  ALU_Out = ALU_In_A - ALU_In_B; //subtract
-    SLL:  ALU_Out = ALU_In_A << ALU_In_B; //logical left shift
-    SLT:  ALU_Out = ($signed(ALU_In_A) < $signed(ALU_In_B)) ? 32'd1 : 32'd0; //signed less than
-    SLTU: ALU_Out = (ALU_In_A < ALU_In_B) ? 32'd1 : 32'd0; //Unsigned set on less then
-    XOR:  ALU_Out = ALU_In_A ^ ALU_In_B; //xor
-    SRL:  ALU_Out = ALU_In_A >> ALU_In_B; //shift logic right
-    SRA:  ALU_Out = $signed(ALU_In_A) >>> ALU_In_B; //signed shift logic right
-    OR:   ALU_Out = ALU_In_A | ALU_In_B; //or
-    AND:  ALU_Out = ALU_In_A & ALU_In_B; //and
+    `ADD:  ALU_Out = ALU_In_A + ALU_In_B; //add
+    `SUB:  ALU_Out = ALU_In_A - ALU_In_B; //subtract
+    `SLL:  ALU_Out = ALU_In_A << ALU_In_B; //logical left shift
+    `SLT:  ALU_Out = ($signed(ALU_In_A) < $signed(ALU_In_B)) ? 32'd1 : 32'd0; //signed less than
+    `SLTU: ALU_Out = (ALU_In_A < ALU_In_B) ? 32'd1 : 32'd0; //Unsigned set on less then
+    `XOR:  ALU_Out = ALU_In_A ^ ALU_In_B; //xor
+    `SRL:  ALU_Out = ALU_In_A >> ALU_In_B; //shift logic right
+    `SRA:  ALU_Out = $signed(ALU_In_A) >>> ALU_In_B; //signed shift logic right
+    `OR:   ALU_Out = ALU_In_A | ALU_In_B; //or
+    `AND:  ALU_Out = ALU_In_A & ALU_In_B; //and
     default: begin
       ALU_Out = 32'b0; //default add
     end
