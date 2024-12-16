@@ -10,8 +10,8 @@ hierarchy -check -top alu
 proc; opt; fsm; opt; memory; opt; techmap; opt;
 
 # Map to generic standard cells (optional for realistic synthesis flow)
-dfflibmap -liberty ../../lib/cells.lib
-abc -liberty ../../lib/cells.lib
+dfflibmap -liberty /opt/libraries/skywater-pdk/libraries/sky130_fd_sc_hd/latest/timing/sky130_fd_sc_hd__tt_100C_1v80.lib
+abc -liberty /opt/libraries/skywater-pdk/libraries/sky130_fd_sc_hd/latest/timing/sky130_fd_sc_hd__tt_100C_1v80.lib
 opt
 
 # Write the synthesized netlist

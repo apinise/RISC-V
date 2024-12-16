@@ -2,7 +2,7 @@
 
 # Define paths
 VERILOG_SRC = ../../rtl/alu.v
-SYNTH_SCRIPT = synth_alu_no_lib.ys
+SYNTH_SCRIPT = synth_alu.ys
 OUTPUT_DIR = build
 SYNTH_OUTPUT = $(OUTPUT_DIR)/alu_synth.v
 
