@@ -11,11 +11,11 @@
 `define AND  4'b1001
 
 // Immediate Gen Types
-`define I_TYPE = 2'b00;
-`define S_TYPE = 2'b01;
-`define B_TYPE = 2'b10;
-`define J_TYPE = 2'b11;
+`define I_TYPE  2'b00
+`define S_TYPE  2'b01
+`define B_TYPE  2'b10
+`define J_TYPE  2'b11
 
 // Instruct Function 3
-`define FUNCT3_SLL      = 3'b001;
-`define FUNCT3_SRL_SRA  = 3'b101;
+`define FUNCT3_SLL      3'b001
+`define FUNCT3_SRL_SRA  3'b101
