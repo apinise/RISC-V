@@ -19,3 +19,13 @@
 // Instruct Function 3
 `define FUNCT3_SLL      3'b001
 `define FUNCT3_SRL_SRA  3'b101
+
+// LW SW OPCODES 
+`define LB_OP_LOAD 	3'b000 //load byte signed
+`define LH_OP_LOAD 	3'b001 //load half word signed
+`define LW_OP_LOAD 	3'b010 //load word
+`define LBU_OP_LOAD 3'b011 //load byte unsigned
+`define LHU_OP_LOAD 3'b100 //load half word unsigned
+`define SB_OP_STORE 3'b101 //store byte opcode
+`define SH_OP_STORE 3'b110 //store half word opcode
+`define SW_OP_STORE 3'b111 //store word opcode
