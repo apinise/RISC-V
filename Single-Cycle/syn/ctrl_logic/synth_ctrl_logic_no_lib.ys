@@ -1,0 +1,19 @@
+# Yosys TCL Script for ALU Synthesis (Standard Verilog)
+
+# Read the Verilog source
+read_verilog ../../rtl/ctrl_logic.v
+
+# Specify the top module
+hierarchy -check -top ctrl_logic
+
+# Perform synthesis
+proc; opt; fsm; opt; memory; opt; techmap; opt;
+
+# Write the synthesized netlist
+write_verilog build/ctrl_logic_synth.v
+
+# Write a report
+stat
+
+# Optionally, print the hierarchy of the design
+hierarchy -top ctrl_logic

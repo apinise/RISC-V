@@ -7,6 +7,7 @@ all:
 	cd program_counter; make all; cd ..
 	cd register_file; make all; cd ..
 	cd data_mem_ctrl; make all; cd ..
+	cd ctrl_logic; make all; cd ..
 
 clean:
 	cd alu; make clean; cd ..
@@ -17,3 +18,4 @@ clean:
 	cd program_counter; make clean; cd ..
 	cd register_file; make clean; cd ..
 	cd data_mem_ctrl; make clean; cd ..
+	cd ctrl_logic; make clean; cd ..
