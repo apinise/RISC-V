@@ -7,8 +7,8 @@ module data_mem_ctrl (
   input   wire  [31:0]  Data_Mem_Read,
   input   wire          Store_Word_Ctrl,
   output  reg   [3:0]   Data_Mem_Write_Ctrl,
-  output  reg   [31:0]  Data_Mem_Read_Out,
-  output  reg   [31:0]  Data_Mem_Write_Out
+  output  wire  [31:0]  Data_Mem_Read_Out,
+  output  wire  [31:0]  Data_Mem_Write_Out
 );
 
 `include "defines.vh"
