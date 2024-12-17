@@ -8,6 +8,11 @@ module data_mem_tb (
 ////////////////////////////////////////////////////////////////
 
 parameter SEED = 5;
+  
+localparam MEM_SIZE = 256;
+localparam ADDR_SIZE = $clog2(MEM_SIZE);
+localparam NUM_TESTS = 100;
+
 
 ////////////////////////////////////////////////////////////////
 ///////////////////////   Internal Net   ///////////////////////
@@ -89,6 +94,8 @@ initial begin
     // Perform read operation
     Read_Ctrl = 1;
     @(posedge Clk_Core);
+    
+    #1;
 
     if (Mem_Data_Read !== expected_data[Mem_Data_Address[ADDR_SIZE+1:2]]) begin
       $display("[ERROR] Address: %h, Expected: %h, Got: %h", Mem_Data_Address, expected_data[Mem_Data_Address[ADDR_SIZE+1:2]], Mem_Data_Read);

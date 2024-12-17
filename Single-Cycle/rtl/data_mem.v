@@ -1,7 +1,9 @@
 `timescale 1ns / 1ps
 
 module data_mem #(
-  parameter MEM_SIZE = 256
+  parameter MEM_SIZE  = 256,
+  parameter NUM_COL   = 4,
+  parameter COL_WIDTH = 8
 )(
   input   wire          Clk_Core,
   input   wire          Read_Ctrl,
@@ -14,9 +16,6 @@ module data_mem #(
 ////////////////////////////////////////////////////////////////
 ////////////////////////   Parameters   ////////////////////////
 ////////////////////////////////////////////////////////////////
-
-localparam NUM_COL    = 4;
-localparam COL_WDITH  = 8;
 
 localparam DWIDTH = NUM_COL * COL_WIDTH;	// Create DWIDTH Parameter
 localparam ADDR_SIZE = $clog2(MEM_SIZE);	// Create Address size
@@ -46,7 +45,7 @@ assign mem_address = Mem_Data_Address[ADDR_SIZE+1:2];	// Assign effective addres
 // Write Port Generate
 generate
   for (i=0; i<NUM_COL; i=i+1) begin
-    always_ff @(posedge Clk_Core) begin
+    always @(posedge Clk_Core) begin
       if (mem_address < MEM_SIZE) begin
         if (Write_Ctrl[i]) begin	// Makes 4 locations per word
           data_mem[mem_address][i*COL_WIDTH +: COL_WIDTH] <= Mem_Data_Write[i*COL_WIDTH +: COL_WIDTH];
@@ -57,7 +56,7 @@ generate
 endgenerate
 
 // Read Port
-always_ff @(posedge Clk_Core) begin
+always @(posedge Clk_Core) begin
   if (Read_Ctrl && ((mem_address) < MEM_SIZE)) begin 
     Mem_Data_Read <= data_mem[mem_address];
   end 
