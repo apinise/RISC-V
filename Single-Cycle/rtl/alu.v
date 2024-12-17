@@ -51,16 +51,16 @@ wire [DWIDTH-1:0] mul_div_upper;
 
 always@(*) begin
   case(ALU_OP)
-    `ADD:  ALU_Out = ALU_In_A + ALU_In_B; //add
-    `SUB:  ALU_Out = ALU_In_A - ALU_In_B; //subtract
-    `SLL:  ALU_Out = ALU_In_A << ALU_In_B; //logical left shift
-    `SLT:  ALU_Out = ($signed(ALU_In_A) < $signed(ALU_In_B)) ? 32'd1 : 32'd0; //signed less than
-    `SLTU: ALU_Out = (ALU_In_A < ALU_In_B) ? 32'd1 : 32'd0; //Unsigned set on less then
-    `XOR:  ALU_Out = ALU_In_A ^ ALU_In_B; //xor
-    `SRL:  ALU_Out = ALU_In_A >> ALU_In_B; //shift logic right
-    `SRA:  ALU_Out = $signed(ALU_In_A) >>> ALU_In_B; //signed shift logic right
-    `OR:   ALU_Out = ALU_In_A | ALU_In_B; //or
-    `AND:  ALU_Out = ALU_In_A & ALU_In_B; //and
+    `ALU_OP_ADD:  ALU_Out = ALU_In_A + ALU_In_B; //add
+    `ALU_OP_SUB:  ALU_Out = ALU_In_A - ALU_In_B; //subtract
+    `ALU_OP_SLL:  ALU_Out = ALU_In_A << ALU_In_B; //logical left shift
+    `ALU_OP_SLT:  ALU_Out = ($signed(ALU_In_A) < $signed(ALU_In_B)) ? 32'd1 : 32'd0; //signed less than
+    `ALU_OP_SLTU: ALU_Out = (ALU_In_A < ALU_In_B) ? 32'd1 : 32'd0; //Unsigned set on less then
+    `ALU_OP_XOR:  ALU_Out = ALU_In_A ^ ALU_In_B; //xor
+    `ALU_OP_SRL:  ALU_Out = ALU_In_A >> ALU_In_B; //shift logic right
+    `ALU_OP_SRA:  ALU_Out = $signed(ALU_In_A) >>> ALU_In_B; //signed shift logic right
+    `ALU_OP_OR:   ALU_Out = ALU_In_A | ALU_In_B; //or
+    `ALU_OP_AND:  ALU_Out = ALU_In_A & ALU_In_B; //and
     default: begin
       ALU_Out = 32'b0; //default add
     end
