@@ -2,7 +2,7 @@
 
 # Define paths
 VERILOG_SRC = ../../rtl/program_counter.v
-SYNTH_SCRIPT = synth_program_counter_no_lib.ys
+SYNTH_SCRIPT = synth_program_counter.ys
 OUTPUT_DIR = build
 SYNTH_OUTPUT = $(OUTPUT_DIR)/program_counter_synth.v
 

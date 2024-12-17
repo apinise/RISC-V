@@ -2,7 +2,7 @@
 
 # Define paths
 VERILOG_SRC = ../../rtl/register_file.v
-SYNTH_SCRIPT = synth_register_file_no_lib.ys
+SYNTH_SCRIPT = synth_register_file.ys
 OUTPUT_DIR = build
 SYNTH_OUTPUT = $(OUTPUT_DIR)/register_file_synth.v
 
