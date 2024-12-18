@@ -1,0 +1,28 @@
+# Yosys TCL Script for ALU Synthesis (Standard Verilog)
+
+# Read the Verilog source
+read_verilog ../../rtl/lib/muxes.v
+read_verilog ../../rtl/data_mem_lw.v
+read_verilog ../../rtl/data_mem_sw.v
+read_verilog ../../rtl/data_mem_ctrl.v
+read_verilog ../../rtl/alu.v
+read_verilog ../../rtl/branch_comp.v
+read_verilog ../../rtl/ctrl_logic.v
+read_verilog ../../rtl/imm_gen.v
+read_verilog ../../rtl/program_counter.v
+read_verilog ../../rtl/register_file.v
+
+# Specify the top module
+hierarchy -check -top core
+
+# Perform synthesis
+proc; opt; fsm; opt; memory; opt; techmap; opt;
+
+# Write the synthesized netlist
+write_verilog build/core_synth.v
+
+# Write a report
+stat
+
+# Optionally, print the hierarchy of the design
+hierarchy -top core
