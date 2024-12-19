@@ -11,6 +11,7 @@ read_verilog ../../rtl/ctrl_logic.v
 read_verilog ../../rtl/imm_gen.v
 read_verilog ../../rtl/program_counter.v
 read_verilog ../../rtl/register_file.v
+read_verilog ../../rtl/core.v
 
 # Specify the top module
 hierarchy -check -top core
