@@ -46,7 +46,7 @@ always @(*) begin
         Imm_Gen_Out = (Instruction[31] == 1'b1) ? {{12{1'b1}},Instruction[19:12],Instruction[20],Instruction[30:21],1'b0} : {{12{1'b0}},Instruction[19:12],Instruction[20],Instruction[30:21],1'b0};
       end
       else begin
-        Imm_Gen_Out = (Instruction[31] == 1'b1) ? {{13{1'b1}},Instruction[30:12]} : {{13{1'b0}},Instruction[30:12]};
+        Imm_Gen_Out = {Instruction[31:12], {12{1'b0}}};
       end
     end
   endcase

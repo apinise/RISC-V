@@ -209,7 +209,7 @@ always @(*) begin
       ALU_Input_A_Sel = 1'b0;       // Use register value as ALU input
       ALU_Input_B_Sel = 1'b1;       // Use immediate value as ALU input
       Reg_WB_Sel      = 2'b10;      // Write Back PC4
-      Imm_Gen_Sel     = 2'b11;      // Generates I type 
+      Imm_Gen_Sel     = 2'b00;      // Generates I type 
       ALU_Opcode      = `ALU_OP_ADD;// ADD immediate to base PC
       Store_Word_En   = 1'b0;       // Disable storing word to data mem
       Read_Ctrl       = 1'b0;       // Do not read from mem
@@ -233,7 +233,7 @@ always @(*) begin
       ALU_Input_A_Sel = 1'b1;       // Use register value as ALU input
       ALU_Input_B_Sel = 1'b1;       // Use immediate value as ALU input
       Reg_WB_Sel      = 2'b01;      // Write Back ALU
-      Imm_Gen_Sel     = 2'b11;      // Generates I type 
+      Imm_Gen_Sel     = 2'b11;      // Generates J type 
       ALU_Opcode      = `ALU_OP_ADD;// ADD immediate to base PC
       Store_Word_En   = 1'b0;       // Disable storing word to data mem
       Read_Ctrl       = 1'b0;       // Do not read from mem 
