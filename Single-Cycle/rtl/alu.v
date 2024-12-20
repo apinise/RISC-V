@@ -53,7 +53,7 @@ always@(*) begin
   case(ALU_OP)
     `ALU_OP_ADD:  ALU_Out = ALU_In_A + ALU_In_B; //add
     `ALU_OP_SUB:  ALU_Out = ALU_In_A - ALU_In_B; //subtract
-    `ALU_OP_SLL:  ALU_Out = ALU_In_A << ALU_In_B; //logical left shift
+    `ALU_OP_SLL:  ALU_Out = ALU_In_A << ALU_In_B[4:0]; //logical left shift
     `ALU_OP_SLT:  ALU_Out = ($signed(ALU_In_A) < $signed(ALU_In_B)) ? 32'd1 : 32'd0; //signed less than
     `ALU_OP_SLTU: ALU_Out = (ALU_In_A < ALU_In_B) ? 32'd1 : 32'd0; //Unsigned set on less then
     `ALU_OP_XOR:  ALU_Out = ALU_In_A ^ ALU_In_B; //xor
