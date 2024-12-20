@@ -15,7 +15,7 @@ parameter CLK_PERIOD = 10;
 
 reg Clk_Core_IF, Clk_Core_MEM, Clk_Core_WB, Rst_Core_N;
 
-integer file, line_num, i, target_pc, Test_Failed, R_Type_Failed;
+integer file, line_num, i, target_pc, Test_Failed, R_Type_Failed, I_Type_Failed;
 reg [31:0] instr;
 reg [31:0] init;
 reg [31:0] expected;
@@ -73,6 +73,7 @@ initial begin
 
     Test_Failed = 0;
     R_Type_Failed = 0;
+    I_Type_Failed = 0;
 
     $display("\n################################################################################\n");
     $display("RUNNING TESTS FOR R TYPE INSTRUCTIONS\n");
@@ -899,16 +900,16 @@ initial begin
     Rst_Core_N = 1;
 
     $display("\n################################################################################\n");
-    $display("RUNNING TESTS FOR I TYPE INSTRUCTIONS");
+    $display("RUNNING TESTS FOR I TYPE INSTRUCTIONS\n");
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
     //                                             ADDI                                             //
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    // Begin testing and instructions
-    file = $fopen("../../programs/and.hex", "r");
+    // Begin testing addi instructions
+    file = $fopen("../../programs/addi.hex", "r");
     if (file == 0) begin
-        $display("ERROR: Failed to open file ../../programs/and.hex");
+        $display("ERROR: Failed to open file ../../programs/addi.hex");
         $finish;
     end
     
@@ -924,9 +925,9 @@ initial begin
     
     target_pc = line_num * 4;
     
-    file = $fopen("../../programs/and_reg_init.hex", "r");
+    file = $fopen("../../programs/addi_reg_init.hex", "r");
     if (file == 0) begin
-        $display("ERROR: Failed to open file ../../programs/and_reg_init.hex");
+        $display("ERROR: Failed to open file ../../programs/addi_reg_init.hex");
         $finish;
     end
     
@@ -938,10 +939,6 @@ initial begin
         end
     end
     $fclose(file);
-    
-    $display("\n################################################################################\n");
-    
-    $display("RUNNING TESTS FOR AND INSTRUCTION\n");
 
     wait (target_pc == DUT.core_1.program_counter.program_count_reg);
 
@@ -949,9 +946,9 @@ initial begin
         release DUT.instruction_mem.instr_mem[i];
     end
     
-    file = $fopen("../../programs/and_reg_final.hex", "r");
+    file = $fopen("../../programs/addi_reg_final.hex", "r");
     if (file == 0) begin
-        $display("ERROR: Failed to open file ../../programs/and_reg_final.hex");
+        $display("ERROR: Failed to open file ../../programs/addi_reg_final.hex");
         $finish;
     end
     
@@ -961,21 +958,20 @@ initial begin
             //$display("Register Address: %h Expected Value: %h Calculated Value: %h", i, expected, DUT.core_1.register_file.reg_array[i]);
             if (DUT.core_1.register_file.reg_array[i] != expected) begin
                 Test_Failed = 1;
+                I_Type_Failed = 1;
             end
             i = i + 1;
         end
     end
     
     if (Test_Failed == 1) begin
-        $display("\nAND INSTRUCTION TESTING FAILED");
+        $display("ADDI INSTRUCTION TESTING FAILED");
     end
     else begin
-        $display("\nAND INSTRUCTION TESTING PASSED");
+        $display("ADDI INSTRUCTION TESTING PASSED");
     end
 
     Test_Failed = 0;
-    
-    $display("\n################################################################################\n");
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////////
