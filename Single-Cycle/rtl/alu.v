@@ -57,8 +57,8 @@ always@(*) begin
     `ALU_OP_SLT:  ALU_Out = ($signed(ALU_In_A) < $signed(ALU_In_B)) ? 32'd1 : 32'd0; //signed less than
     `ALU_OP_SLTU: ALU_Out = (ALU_In_A < ALU_In_B) ? 32'd1 : 32'd0; //Unsigned set on less then
     `ALU_OP_XOR:  ALU_Out = ALU_In_A ^ ALU_In_B; //xor
-    `ALU_OP_SRL:  ALU_Out = ALU_In_A >> ALU_In_B; //shift logic right
-    `ALU_OP_SRA:  ALU_Out = $signed(ALU_In_A) >>> ALU_In_B; //signed shift logic right
+    `ALU_OP_SRL:  ALU_Out = ALU_In_A >> ALU_In_B[4:0]; //shift logic right
+    `ALU_OP_SRA:  ALU_Out = $signed(ALU_In_A) >>> ALU_In_B[4:0]; //signed shift logic right
     `ALU_OP_OR:   ALU_Out = ALU_In_A | ALU_In_B; //or
     `ALU_OP_AND:  ALU_Out = ALU_In_A & ALU_In_B; //and
     default: begin
