@@ -18,6 +18,7 @@ reg [12:0] imm_b_type;
 reg [20:0] imm_j_type;
 
 reg [2:0] instruct_funct3;
+reg [6:0] instruct_funct7;
 
 ////////////////////////////////////////////////////////////////
 ///////////////////////   Module Logic   ///////////////////////
@@ -26,10 +27,11 @@ reg [2:0] instruct_funct3;
 always @(*) begin
   Imm_Gen_Out     = 32'b0;
   instruct_funct3 = Instruction[14:12];
+  instruct_funct7 = Instruction[6:0];
   
   case (Imm_Sel)
     `I_TYPE: begin
-      if (instruct_funct3 == `FUNCT3_SLL || instruct_funct3 == `FUNCT3_SRL_SRA) begin
+      if ((instruct_funct3 == `FUNCT3_SLL || instruct_funct3 == `FUNCT3_SRL_SRA) && instruct_funct7 == `OPCODE_ALU_R) begin
         Imm_Gen_Out = {{26{1'b0}}, Instruction[24:20]};
       end
       else begin
