@@ -1,0 +1,7 @@
+jal x1, 0xc
+addi x2, x6, 0x23
+jal x3, 0x10
+addi x4, x1, 0x45
+addi x5, x4, 0x10
+jal x6, -16
+addi x7, x3, 0x20

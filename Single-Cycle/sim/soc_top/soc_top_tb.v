@@ -16,7 +16,7 @@ parameter CLK_PERIOD = 10;
 reg Clk_Core_IF, Clk_Core_MEM, Clk_Core_WB, Rst_Core_N;
 
 integer file, line_num, i, target_pc, Test_Failed, R_Type_Failed, I_Type_Failed;
-integer SW_Type_Failed, LW_Type_Failed, B_Type_Failed;
+integer SW_Type_Failed, LW_Type_Failed, B_Type_Failed, AUIPC_Type_Failed, J_Type_Failed;
 reg [31:0] instr;
 reg [31:0] init;
 reg [31:0] expected;
@@ -78,6 +78,8 @@ initial begin
     SW_Type_Failed = 0;
     LW_Type_Failed = 0;
     B_Type_Failed = 0;
+    AUIPC_Type_Failed = 0;
+    J_Type_Failed = 0;
 
     $display("\n################################################################################\n");
     $display("RUNNING TESTS FOR R TYPE INSTRUCTIONS\n");
@@ -1623,6 +1625,85 @@ initial begin
         $display("SRAI INSTRUCTION TESTING PASSED");
     end
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Rst_Core_N = 0;
+    repeat (2) begin
+      @(posedge Clk_Core_IF);
+    end
+    Rst_Core_N = 1;
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+    //                                            LUI                                               //
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    // Begin testing lui instructions
+    file = $fopen("../../programs/lui.hex", "r");
+    if (file == 0) begin
+        $display("ERROR: Failed to open file ../../programs/lui.hex");
+        $finish;
+    end
+    
+    // Load instructions into mem
+    line_num = 0;
+    while (!$feof(file)) begin
+        if ($fscanf(file, "%h\n", instr) > 0) begin
+            force DUT.instruction_mem.instr_mem[line_num] = instr;
+            line_num = line_num + 1;
+        end
+    end
+    $fclose(file);
+    
+    target_pc = line_num * 4;
+    
+    file = $fopen("../../programs/lui_reg_init.hex", "r");
+    if (file == 0) begin
+        $display("ERROR: Failed to open file ../../programs/lui_reg_init.hex");
+        $finish;
+    end
+    
+    i = 0;
+    while (!$feof(file)) begin
+        if ($fscanf(file, "%h\n", init) > 0) begin
+            DUT.core_1.register_file.reg_array[i] = init;
+            i = i + 1;
+        end
+    end
+    $fclose(file);
+
+    wait (target_pc == DUT.core_1.program_counter.program_count_reg);
+
+    for (i = 0; i < line_num; i = i + 1) begin
+        release DUT.instruction_mem.instr_mem[i];
+    end
+    
+    file = $fopen("../../programs/lui_reg_final.hex", "r");
+    if (file == 0) begin
+        $display("ERROR: Failed to open file ../../programs/lui_reg_final.hex");
+        $finish;
+    end
+    
+    i = 0;
+    while (!$feof(file)) begin
+        if ($fscanf(file, "%h\n", expected) > 0) begin
+            //$display("Register Address: %h Expected Value: %h Calculated Value: %h", i, expected, DUT.core_1.register_file.reg_array[i]);
+            if (DUT.core_1.register_file.reg_array[i] != expected) begin
+                Test_Failed = 1;
+                I_Type_Failed = 1;
+            end
+            i = i + 1;
+        end
+    end
+    
+    if (Test_Failed == 1) begin
+        $display("LUI INSTRUCTION TESTING FAILED");
+    end
+    else begin
+        $display("LUI INSTRUCTION TESTING PASSED");
+    end
+
     if (I_Type_Failed == 1) begin
         $display("\nI TYPE INSTRUCTION TESTING FAILED");
     end
@@ -2402,6 +2483,677 @@ initial begin
     end
     Rst_Core_N = 1;
     
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+    //                                            BEQ                                               //
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    // Begin testing sw instructions
+    file = $fopen("../../programs/bne.hex", "r");
+    if (file == 0) begin
+        $display("ERROR: Failed to open file ../../programs/bne.hex");
+        $finish;
+    end
+    
+    // Load instructions into mem
+    line_num = 0;
+    while (!$feof(file)) begin
+        if ($fscanf(file, "%h\n", instr) > 0) begin
+            force DUT.instruction_mem.instr_mem[line_num] = instr;
+            line_num = line_num + 1;
+        end
+    end
+    $fclose(file);
+    
+    target_pc = line_num * 4;
+    
+    file = $fopen("../../programs/bne_reg_init.hex", "r");
+    if (file == 0) begin
+        $display("ERROR: Failed to open file ../../programs/bne_reg_init.hex");
+        $finish;
+    end
+    
+    i = 0;
+    while (!$feof(file)) begin
+        if ($fscanf(file, "%h\n", init) > 0) begin
+            DUT.core_1.register_file.reg_array[i] = init;
+            i = i + 1;
+        end
+    end
+    $fclose(file);
+
+    wait (target_pc == DUT.core_1.program_counter.program_count_reg);
+
+    for (i = 0; i < line_num; i = i + 1) begin
+        release DUT.instruction_mem.instr_mem[i];
+    end
+    
+    file = $fopen("../../programs/bne_reg_final.hex", "r");
+    if (file == 0) begin
+        $display("ERROR: Failed to open file ../../programs/bne_reg_final.hex");
+        $finish;
+    end
+    
+    i = 0;
+    while (!$feof(file)) begin
+        if ($fscanf(file, "%h\n", expected) > 0) begin
+            //$display("Register Address: %h Expected Value: %h Calculated Value: %h", i, expected, DUT.core_1.register_file.reg_array[i]);
+            if (DUT.core_1.register_file.reg_array[i] != expected) begin
+                Test_Failed = 1;
+                B_Type_Failed = 1;
+            end
+            i = i + 1;
+        end
+    end
+    
+    if (Test_Failed == 1) begin
+        $display("BNE INSTRUCTION TESTING FAILED");
+    end
+    else begin
+        $display("BNE INSTRUCTION TESTING PASSED");
+    end
+
+    Test_Failed = 0;
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Rst_Core_N = 0;
+    repeat (2) begin
+     @(posedge Clk_Core_IF);
+    end
+    Rst_Core_N = 1;
+    
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+    //                                            BLT                                               //
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    // Begin testing sw instructions
+    file = $fopen("../../programs/blt.hex", "r");
+    if (file == 0) begin
+        $display("ERROR: Failed to open file ../../programs/blt.hex");
+        $finish;
+    end
+
+    // Load instructions into mem
+    line_num = 0;
+    while (!$feof(file)) begin
+        if ($fscanf(file, "%h\n", instr) > 0) begin
+            force DUT.instruction_mem.instr_mem[line_num] = instr;
+            line_num = line_num + 1;
+        end
+    end
+    $fclose(file);
+
+    target_pc = line_num * 4;
+
+    file = $fopen("../../programs/blt_reg_init.hex", "r");
+    if (file == 0) begin
+        $display("ERROR: Failed to open file ../../programs/blt_reg_init.hex");
+        $finish;
+    end
+
+    i = 0;
+    while (!$feof(file)) begin
+        if ($fscanf(file, "%h\n", init) > 0) begin
+            DUT.core_1.register_file.reg_array[i] = init;
+            i = i + 1;
+        end
+    end
+    $fclose(file);
+
+    wait (target_pc == DUT.core_1.program_counter.program_count_reg);
+
+    for (i = 0; i < line_num; i = i + 1) begin
+        release DUT.instruction_mem.instr_mem[i];
+    end
+
+    file = $fopen("../../programs/blt_reg_final.hex", "r");
+    if (file == 0) begin
+        $display("ERROR: Failed to open file ../../programs/blt_reg_final.hex");
+        $finish;
+    end
+
+    i = 0;
+    while (!$feof(file)) begin
+        if ($fscanf(file, "%h\n", expected) > 0) begin
+            //$display("Register Address: %h Expected Value: %h Calculated Value: %h", i, expected, DUT.core_1.register_file.reg_array[i]);
+            if (DUT.core_1.register_file.reg_array[i] != expected) begin
+                Test_Failed = 1;
+                B_Type_Failed = 1;
+            end
+            i = i + 1;
+        end
+    end
+
+    if (Test_Failed == 1) begin
+        $display("BLT INSTRUCTION TESTING FAILED");
+    end
+    else begin
+        $display("BLT INSTRUCTION TESTING PASSED");
+    end
+
+    Test_Failed = 0;
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Rst_Core_N = 0;
+    repeat (2) begin
+     @(posedge Clk_Core_IF);
+    end
+    Rst_Core_N = 1;
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+    //                                            BGE                                               //
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    // Begin testing sw instructions
+    file = $fopen("../../programs/bge.hex", "r");
+    if (file == 0) begin
+        $display("ERROR: Failed to open file ../../programs/bge.hex");
+        $finish;
+    end
+
+    // Load instructions into mem
+    line_num = 0;
+    while (!$feof(file)) begin
+        if ($fscanf(file, "%h\n", instr) > 0) begin
+            force DUT.instruction_mem.instr_mem[line_num] = instr;
+            line_num = line_num + 1;
+        end
+    end
+    $fclose(file);
+
+    target_pc = line_num * 4;
+
+    file = $fopen("../../programs/bge_reg_init.hex", "r");
+    if (file == 0) begin
+        $display("ERROR: Failed to open file ../../programs/bge_reg_init.hex");
+        $finish;
+    end
+
+    i = 0;
+    while (!$feof(file)) begin
+        if ($fscanf(file, "%h\n", init) > 0) begin
+            DUT.core_1.register_file.reg_array[i] = init;
+            i = i + 1;
+        end
+    end
+    $fclose(file);
+
+    wait (target_pc == DUT.core_1.program_counter.program_count_reg);
+
+    for (i = 0; i < line_num; i = i + 1) begin
+        release DUT.instruction_mem.instr_mem[i];
+    end
+
+    file = $fopen("../../programs/bge_reg_final.hex", "r");
+    if (file == 0) begin
+        $display("ERROR: Failed to open file ../../programs/bge_reg_final.hex");
+        $finish;
+    end
+
+    i = 0;
+    while (!$feof(file)) begin
+        if ($fscanf(file, "%h\n", expected) > 0) begin
+            //$display("Register Address: %h Expected Value: %h Calculated Value: %h", i, expected, DUT.core_1.register_file.reg_array[i]);
+            if (DUT.core_1.register_file.reg_array[i] != expected) begin
+                Test_Failed = 1;
+                B_Type_Failed = 1;
+            end
+            i = i + 1;
+        end
+    end
+
+    if (Test_Failed == 1) begin
+        $display("BGE INSTRUCTION TESTING FAILED");
+    end
+    else begin
+        $display("BGE INSTRUCTION TESTING PASSED");
+    end
+
+    Test_Failed = 0;
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Rst_Core_N = 0;
+    repeat (2) begin
+     @(posedge Clk_Core_IF);
+    end
+    Rst_Core_N = 1;
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+    //                                            BLTU                                              //
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    // Begin testing sw instructions
+    file = $fopen("../../programs/bltu.hex", "r");
+    if (file == 0) begin
+        $display("ERROR: Failed to open file ../../programs/bltu.hex");
+        $finish;
+    end
+
+    // Load instructions into mem
+    line_num = 0;
+    while (!$feof(file)) begin
+        if ($fscanf(file, "%h\n", instr) > 0) begin
+            force DUT.instruction_mem.instr_mem[line_num] = instr;
+            line_num = line_num + 1;
+        end
+    end
+    $fclose(file);
+
+    target_pc = line_num * 4;
+
+    file = $fopen("../../programs/bltu_reg_init.hex", "r");
+    if (file == 0) begin
+        $display("ERROR: Failed to open file ../../programs/bltu_reg_init.hex");
+        $finish;
+    end
+
+    i = 0;
+    while (!$feof(file)) begin
+        if ($fscanf(file, "%h\n", init) > 0) begin
+            DUT.core_1.register_file.reg_array[i] = init;
+            i = i + 1;
+        end
+    end
+    $fclose(file);
+
+    wait (target_pc == DUT.core_1.program_counter.program_count_reg);
+
+    for (i = 0; i < line_num; i = i + 1) begin
+        release DUT.instruction_mem.instr_mem[i];
+    end
+
+    file = $fopen("../../programs/bltu_reg_final.hex", "r");
+    if (file == 0) begin
+        $display("ERROR: Failed to open file ../../programs/bltu_reg_final.hex");
+        $finish;
+    end
+
+    i = 0;
+    while (!$feof(file)) begin
+        if ($fscanf(file, "%h\n", expected) > 0) begin
+            //$display("Register Address: %h Expected Value: %h Calculated Value: %h", i, expected, DUT.core_1.register_file.reg_array[i]);
+            if (DUT.core_1.register_file.reg_array[i] != expected) begin
+                Test_Failed = 1;
+                B_Type_Failed = 1;
+            end
+            i = i + 1;
+        end
+    end
+
+    if (Test_Failed == 1) begin
+        $display("BLTU INSTRUCTION TESTING FAILED");
+    end
+    else begin
+        $display("BLTU INSTRUCTION TESTING PASSED");
+    end
+
+    Test_Failed = 0;
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Rst_Core_N = 0;
+    repeat (2) begin
+     @(posedge Clk_Core_IF);
+    end
+    Rst_Core_N = 1;
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+    //                                            BGEU                                              //
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    // Begin testing sw instructions
+    file = $fopen("../../programs/bgeu.hex", "r");
+    if (file == 0) begin
+        $display("ERROR: Failed to open file ../../programs/bgeu.hex");
+        $finish;
+    end
+
+    // Load instructions into mem
+    line_num = 0;
+    while (!$feof(file)) begin
+        if ($fscanf(file, "%h\n", instr) > 0) begin
+            force DUT.instruction_mem.instr_mem[line_num] = instr;
+            line_num = line_num + 1;
+        end
+    end
+    $fclose(file);
+
+    target_pc = line_num * 4;
+
+    file = $fopen("../../programs/bgeu_reg_init.hex", "r");
+    if (file == 0) begin
+        $display("ERROR: Failed to open file ../../programs/bgeu_reg_init.hex");
+        $finish;
+    end
+
+    i = 0;
+    while (!$feof(file)) begin
+        if ($fscanf(file, "%h\n", init) > 0) begin
+            DUT.core_1.register_file.reg_array[i] = init;
+            i = i + 1;
+        end
+    end
+    $fclose(file);
+
+    wait (target_pc == DUT.core_1.program_counter.program_count_reg);
+
+    for (i = 0; i < line_num; i = i + 1) begin
+        release DUT.instruction_mem.instr_mem[i];
+    end
+
+    file = $fopen("../../programs/bgeu_reg_final.hex", "r");
+    if (file == 0) begin
+        $display("ERROR: Failed to open file ../../programs/bgeu_reg_final.hex");
+        $finish;
+    end
+
+    i = 0;
+    while (!$feof(file)) begin
+        if ($fscanf(file, "%h\n", expected) > 0) begin
+            //$display("Register Address: %h Expected Value: %h Calculated Value: %h", i, expected, DUT.core_1.register_file.reg_array[i]);
+            if (DUT.core_1.register_file.reg_array[i] != expected) begin
+                Test_Failed = 1;
+                B_Type_Failed = 1;
+            end
+            i = i + 1;
+        end
+    end
+
+    if (Test_Failed == 1) begin
+        $display("BGEU INSTRUCTION TESTING FAILED");
+    end
+    else begin
+        $display("BGEU INSTRUCTION TESTING PASSED");
+    end
+
+    if (B_Type_Failed == 1) begin
+        $display("\nBRANCH TYPE INSTRUCTION TESTING FAILED");
+    end
+    else begin
+        $display("\nBRANCH TYPE INSTRUCTION TESTING PASSED");
+    end
+
+    Test_Failed = 0;
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Rst_Core_N = 0;
+    repeat (2) begin
+     @(posedge Clk_Core_IF);
+    end
+    Rst_Core_N = 1;
+
+    $display("\n################################################################################\n");
+    $display("RUNNING TESTS FOR AUIPC TYPE INSTRUCTIONS\n");
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+    //                                           AUIPC                                              //
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    // Begin testing sw instructions
+    file = $fopen("../../programs/auipc.hex", "r");
+    if (file == 0) begin
+        $display("ERROR: Failed to open file ../../programs/auipc.hex");
+        $finish;
+    end
+
+    // Load instructions into mem
+    line_num = 0;
+    while (!$feof(file)) begin
+        if ($fscanf(file, "%h\n", instr) > 0) begin
+            force DUT.instruction_mem.instr_mem[line_num] = instr;
+            line_num = line_num + 1;
+        end
+    end
+    $fclose(file);
+
+    target_pc = line_num * 4;
+
+    file = $fopen("../../programs/auipc_reg_init.hex", "r");
+    if (file == 0) begin
+        $display("ERROR: Failed to open file ../../programs/auipc_reg_init.hex");
+        $finish;
+    end
+
+    i = 0;
+    while (!$feof(file)) begin
+        if ($fscanf(file, "%h\n", init) > 0) begin
+            DUT.core_1.register_file.reg_array[i] = init;
+            i = i + 1;
+        end
+    end
+    $fclose(file);
+
+    wait (target_pc == DUT.core_1.program_counter.program_count_reg);
+
+    for (i = 0; i < line_num; i = i + 1) begin
+        release DUT.instruction_mem.instr_mem[i];
+    end
+
+    file = $fopen("../../programs/auipc_reg_final.hex", "r");
+    if (file == 0) begin
+        $display("ERROR: Failed to open file ../../programs/auipc_reg_final.hex");
+        $finish;
+    end
+
+    i = 0;
+    while (!$feof(file)) begin
+        if ($fscanf(file, "%h\n", expected) > 0) begin
+            //$display("Register Address: %h Expected Value: %h Calculated Value: %h", i, expected, DUT.core_1.register_file.reg_array[i]);
+            if (DUT.core_1.register_file.reg_array[i] != expected) begin
+                Test_Failed = 1;
+                AUIPC_Type_Failed = 1;
+            end
+            i = i + 1;
+        end
+    end
+
+    if (Test_Failed == 1) begin
+        $display("AUIPC INSTRUCTION TESTING FAILED");
+    end
+    else begin
+        $display("AUIPC INSTRUCTION TESTING PASSED");
+    end
+
+    if (AUIPC_Type_Failed == 1) begin
+        $display("\nAUIPC TYPE INSTRUCTION TESTING FAILED");
+    end
+    else begin
+        $display("\nAUIPC TYPE INSTRUCTION TESTING PASSED");
+    end
+
+    Test_Failed = 0;
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Rst_Core_N = 0;
+    repeat (2) begin
+     @(posedge Clk_Core_IF);
+    end
+    Rst_Core_N = 1;
+
+    $display("\n################################################################################\n");
+    $display("RUNNING TESTS FOR JUMP TYPE INSTRUCTIONS\n");
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+    //                                            JAL                                               //
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    // Begin testing sw instructions
+    file = $fopen("../../programs/jal.hex", "r");
+    if (file == 0) begin
+        $display("ERROR: Failed to open file ../../programs/jal.hex");
+        $finish;
+    end
+
+    // Load instructions into mem
+    line_num = 0;
+    while (!$feof(file)) begin
+        if ($fscanf(file, "%h\n", instr) > 0) begin
+            force DUT.instruction_mem.instr_mem[line_num] = instr;
+            line_num = line_num + 1;
+        end
+    end
+    $fclose(file);
+
+    target_pc = line_num * 4;
+
+    file = $fopen("../../programs/jal_reg_init.hex", "r");
+    if (file == 0) begin
+        $display("ERROR: Failed to open file ../../programs/jal_reg_init.hex");
+        $finish;
+    end
+
+    i = 0;
+    while (!$feof(file)) begin
+        if ($fscanf(file, "%h\n", init) > 0) begin
+            DUT.core_1.register_file.reg_array[i] = init;
+            i = i + 1;
+        end
+    end
+    $fclose(file);
+
+    wait (target_pc == DUT.core_1.program_counter.program_count_reg);
+
+    for (i = 0; i < line_num; i = i + 1) begin
+        release DUT.instruction_mem.instr_mem[i];
+    end
+
+    file = $fopen("../../programs/jal_reg_final.hex", "r");
+    if (file == 0) begin
+        $display("ERROR: Failed to open file ../../programs/jal_reg_final.hex");
+        $finish;
+    end
+
+    i = 0;
+    while (!$feof(file)) begin
+        if ($fscanf(file, "%h\n", expected) > 0) begin
+            //$display("Register Address: %h Expected Value: %h Calculated Value: %h", i, expected, DUT.core_1.register_file.reg_array[i]);
+            if (DUT.core_1.register_file.reg_array[i] != expected) begin
+                Test_Failed = 1;
+                J_Type_Failed = 1;
+            end
+            i = i + 1;
+        end
+    end
+
+    if (Test_Failed == 1) begin
+        $display("JAL INSTRUCTION TESTING FAILED");
+    end
+    else begin
+        $display("JAL INSTRUCTION TESTING PASSED");
+    end
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Rst_Core_N = 0;
+    repeat (2) begin
+     @(posedge Clk_Core_IF);
+    end
+    Rst_Core_N = 1;
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+    //                                           JALR                                               //
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    // Begin testing sw instructions
+    file = $fopen("../../programs/jalr.hex", "r");
+    if (file == 0) begin
+        $display("ERROR: Failed to open file ../../programs/jalr.hex");
+        $finish;
+    end
+
+    // Load instructions into mem
+    line_num = 0;
+    while (!$feof(file)) begin
+        if ($fscanf(file, "%h\n", instr) > 0) begin
+            force DUT.instruction_mem.instr_mem[line_num] = instr;
+            line_num = line_num + 1;
+        end
+    end
+    $fclose(file);
+
+    target_pc = line_num * 4;
+
+    file = $fopen("../../programs/jalr_reg_init.hex", "r");
+    if (file == 0) begin
+        $display("ERROR: Failed to open file ../../programs/jalr_reg_init.hex");
+        $finish;
+    end
+
+    i = 0;
+    while (!$feof(file)) begin
+        if ($fscanf(file, "%h\n", init) > 0) begin
+            DUT.core_1.register_file.reg_array[i] = init;
+            i = i + 1;
+        end
+    end
+    $fclose(file);
+
+    wait (target_pc == DUT.core_1.program_counter.program_count_reg);
+
+    for (i = 0; i < line_num; i = i + 1) begin
+        release DUT.instruction_mem.instr_mem[i];
+    end
+
+    file = $fopen("../../programs/jalr_reg_final.hex", "r");
+    if (file == 0) begin
+        $display("ERROR: Failed to open file ../../programs/jalr_reg_final.hex");
+        $finish;
+    end
+
+    i = 0;
+    while (!$feof(file)) begin
+        if ($fscanf(file, "%h\n", expected) > 0) begin
+            //$display("Register Address: %h Expected Value: %h Calculated Value: %h", i, expected, DUT.core_1.register_file.reg_array[i]);
+            if (DUT.core_1.register_file.reg_array[i] != expected) begin
+                Test_Failed = 1;
+                J_Type_Failed = 1;
+            end
+            i = i + 1;
+        end
+    end
+
+    if (Test_Failed == 1) begin
+        $display("JALR INSTRUCTION TESTING FAILED");
+    end
+    else begin
+        $display("JALR INSTRUCTION TESTING PASSED");
+    end
+
+    if (J_Type_Failed == 1) begin
+        $display("\nJUMP TYPE INSTRUCTION TESTING FAILED");
+    end
+    else begin
+        $display("\nJUMP TYPE INSTRUCTION TESTING PASSED");
+    end
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    Rst_Core_N = 0;
+    repeat (2) begin
+     @(posedge Clk_Core_IF);
+    end
+    Rst_Core_N = 1;
+
     $finish;
 
 end
