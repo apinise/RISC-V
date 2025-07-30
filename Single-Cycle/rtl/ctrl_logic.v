@@ -21,7 +21,7 @@ module ctrl_logic (
   input   wire          Branch_Less_Than,
   output  reg           Branch_Un_Sel,
   // HALT OPCODE CNTRL
-  output  reg           Clk_Enable
+  output  reg           Halt
 );
 
 ////////////////////////////////////////////////////////////////
@@ -62,12 +62,13 @@ always @(*) begin
   Store_Word_En   = 1'd0;
   Read_Ctrl       = 1'd0;
   Branch_Un_Sel   = 1'd0;
-  Clk_Enable      = 1'd1;
   
   case(instruct_opcode)
-    `OPCODE_HALT: begin
-      Clk_Enable  = 1'b0;
-      Read_Ctrl   = 1'b1;
+
+    `OPCODE_ECTRL: begin
+      if (Instruction[31:20] == 12'h001) begin
+        Halt      = 1'b1;
+      end
     end
     
     `OPCODE_ALU_R: begin
@@ -260,7 +261,6 @@ ctrl_logic ctrl_logic (
   .Branch_Equal(),
   .Branch_Less_Than(),
   .Branch_Un_Sel(),
-  .Clk_Enable()
 );
 */
 

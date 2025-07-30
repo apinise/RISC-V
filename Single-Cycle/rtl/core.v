@@ -72,6 +72,7 @@ wire [2:0]  lw_sw_opcode;
 wire        data_mem_sw_enable;
 // Branch control signals
 wire        branch_unsigned_sel;
+wire        pc_halt;
 
 ////////////////////////////////////////////////////////////////
 //////////////////////   Instantiations   //////////////////////
@@ -92,7 +93,8 @@ ctrl_logic ctrl_logic (
   .Read_Ctrl        (Mem_Read_Ctrl),
   .Branch_Equal     (branch_equal_comp),
   .Branch_Less_Than (branch_less_than_comp),
-  .Branch_Un_Sel    (branch_unsigned_sel)
+  .Branch_Un_Sel    (branch_unsigned_sel),
+  .Halt             (pc_halt)
 );
 
 // Program Counter
@@ -102,7 +104,8 @@ program_counter program_counter (
   .PC_Sel           (mux_pc_sel),           // Program counter load selection
   .Program_Count_Imm(program_count_imm),    // ALU value to load to pc
   .Program_Count_Off(program_count_offset), // PC+4 value to load to pc
-  .Program_Count    (Program_Count)         // Current pc to instruct mem, and alu input a mux
+  .Program_Count    (Program_Count),        // Current pc to instruct mem, and alu input a mux
+  .Halt             (pc_halt)
 );
 
 // ALU

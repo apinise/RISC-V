@@ -22,6 +22,7 @@ module program_counter (
 	input	  wire		    Clk_Core,
 	input	  wire		    Rst_Core_N,
 	input	  wire		    PC_Sel,
+	input		wire				Halt,
 	input	  wire [31:0]	Program_Count_Imm,
 	output  wire [31:0]	Program_Count_Off,
 	output  wire [31:0]	Program_Count
@@ -43,7 +44,8 @@ reg  [31:0] program_count_reg;
 assign program_count_four = program_count_reg + 32'd4;
 
 // Multiplexer for selecting pc source
-assign program_count_new = (PC_Sel == 1'b1) ? Program_Count_Imm : program_count_four;
+assign program_count_new = (Halt == 1'b1) ? program_count_reg 
+														: ((PC_Sel == 1'b1) ? Program_Count_Imm : program_count_four);
 
 // PC Register
 always @(posedge Clk_Core or negedge Rst_Core_N) begin

@@ -41,6 +41,7 @@
 `define OPCODE_LUI        7'b0110111
 `define OPCODE_AUIPC      7'b0010111
 `define OPCODE_HALT       7'b1111111
+`define OPCODE_ECTRL      7'b1110011
 
 // Branch FUNCT3
 `define BEQ  3'b000
