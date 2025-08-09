@@ -1,0 +1,29 @@
+CAPI=2:
+name: riscv:ip:if_stage:1.0
+description: "RTL files for the instruction fetch stage of RISC-V core"
+
+filesets:
+  rtl:
+    files:
+      - rtl/program_counter.sv
+      - rtl/imem_pkg.sv
+      - rtl/imem_rom.sv
+      - rtl/if_stage.sv
+    file_type: systemVerilogSource
+
+targets:
+  lint:
+    filesets:
+      - rtl
+    toplevel: if_stage
+    default_tool: verilator
+    tools:
+      verilator:
+        mode: lint-only
+        verilator_options:
+          - "-Wall"
+
+  default:
+    filesets:
+      - rtl
+    toplevel: if_stage
