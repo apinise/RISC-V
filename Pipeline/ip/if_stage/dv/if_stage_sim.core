@@ -1,0 +1,29 @@
+CAPI=2:
+name: riscv:dv:if_stage_sim:1.0
+description: "IF Stage DV sim target"
+
+filesets:
+  files_rtl:
+    depend:
+      - riscv:ip:if_stage
+
+  files_dv:
+    files:
+      - if_stage_tb.sv
+    file_type: systemVerilogSource
+
+targets:
+  sim:
+    default_tool: modelsim
+    filesets:
+      - files_rtl
+      - files_dv
+    toplevel: if_stage_tb
+    tools:
+      modelsim:
+        vlog_options:
+          - "-sv"
+        vsim_options:
+          - "-c"
+          - "-do"
+          - "dofile.do"
