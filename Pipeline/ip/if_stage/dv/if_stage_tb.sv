@@ -72,8 +72,10 @@ module if_stage_tb;
     // Flush
     $display("Flushing (NOP inject)");
     pc_imm = 32'h00000040;
+    pc_sel = 1;
     flush = 1;
     @(posedge clk);
+    pc_sel = 0;
     flush = 0;
 
     // Run a few more cycles

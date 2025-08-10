@@ -28,9 +28,6 @@ always_ff @(posedge clk) begin
   if (!rst_n) begin
     pc_reg <= 32'd0;
   end
-  else if (flush) begin
-    pc_reg <= pc_imm;
-  end
   else if (stall) begin
     pc_reg <= pc_reg;
   end
