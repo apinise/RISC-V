@@ -1,0 +1,66 @@
+name: Linter
+
+on: [push, pull_request]
+
+jobs:
+  rtl-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y verilator python3-pip
+          pip3 install fusesoc
+
+      - name: Add local FuseSoC library
+        run: |
+          # Add the repo as a library. FuseSoC will use fusesoc.conf for cores_root
+          fusesoc library add local .
+          echo "Raw cores list:"
+          fusesoc list-cores
+
+      - name: Run lint on all cores with lint target
+        run: |
+          set -e
+          # Extract only proper core names (vendor:library:name:version)
+          PASSED=0
+          SKIPPED=0
+          CORES=$(fusesoc list-cores | awk 'NR>2 {print $1}')
+          for core in $CORES; do
+            if fusesoc core-info "$core" | awk '/Targets:/,/^$/' | grep -q "^lint"; then
+              echo "==> Linting $core"
+              if fusesoc run --target=lint "$core"; then
+                echo "✅ Lint PASSED for $core"
+                PASSED=$((PASSED+1))
+              else
+                echo "❌ Lint FAILED for $core"
+                exit 1
+              fi
+            else
+              echo "⏭ Skipping $core (no lint target)"
+              SKIPPED=$((SKIPPED+1))
+            fi
+          done
+          echo "Lint summary: $PASSED passed, $SKIPPED skipped."
+          
+  python-lint:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11"]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pylint
+      - name: Analysing the code with pylint
+        run: |
+          pylint $(git ls-files '*.py')
